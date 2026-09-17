@@ -133,15 +133,43 @@ demo_ejercicio2_modulos() {
 # ------------------------------------------------------------------------------
 # 💡 GUÍA PASO A PASO EN VIVO PARA MOSTRAR A LOS ALUMNOS (DEMO 2):
 # ------------------------------------------------------------------------------
-# Paso 2.1: Ver módulos en ejecución:
-#   $ lsmod | head -n 10
-#   -> Explicación: Muestra el nombre del módulo, tamaño en RAM y lista de procesos
-#      o submódulos que dependen de él ('Used by').
+# Paso 2.0: Explicar qué es un LKM (Loadable Kernel Module) y la arquitectura modular:
+#   -> ¿Qué es un LKM?
+#      Es un bloque de código ejecutable compilado (archivo .ko: Kernel Object) que el
+#      kernel de Linux puede enlazar y cargar dinámicamente en memoria RAM en tiempo
+#      de ejecución, sin necesidad de recompilar el núcleo ni reiniciar el sistema.
+#   -> ¿Por qué es fundamental en Entrada/Salida?
+#      Linux tiene un diseño monolítico modular. En lugar de incluir en el kernel base
+#      los controladores de miles de dispositivos físicos y sistemas de archivos existentes,
+#      los drivers de E/S (ej: discos SATA, controladores RAID, sistemas ext4/xfs, bucles loop)
+#      se mantienen como módulos bajo demanda en '/lib/modules/$(uname -r)/kernel/'.
+#   -> Ventaja y advertencia de seguridad:
+#      - Ventaja: Huella de memoria mínima en RAM y soporte plug-and-play instantáneo.
+#      - Advertencia: Los LKMs se ejecutan en el espacio de memoria privilegiado del Kernel (Ring 0).
+#        Un puntero nulo o fallo de segmentación dentro de un módulo produce un Kernel Panic
+#        que interrumpe por completo la ejecución del sistema operativo.
 #
-# Paso 2.2: Inspeccionar un módulo concreto con 'modinfo':
+# Paso 2.1: Ver módulos en ejecución y el subsistema /proc/modules:
+#   $ lsmod | head -n 10
+#   -> Explicación de las 3 columnas de lsmod:
+#      1. Module:  Nombre identificador del módulo cargado en el kernel.
+#      2. Size:    Cantidad de memoria RAM ocupada por el módulo en bytes.
+#      3. Used by: Contador de referencias y lista de otros módulos o subsistemas que
+#         dependen de él. Si el contador es mayor a 0, el módulo está ocupado y no puede descargarse.
+#
+# Paso 2.2: Inspeccionar los metadatos de un controlador con 'modinfo':
 #   $ modinfo loop
-#   -> Explicación: Revela la ruta del archivo binario compilado (.ko), autor, licencia,
-#      alias de hardware y dependencias hacia otros subsistemas del kernel.
+#   -> Explicación de los campos clave extraídos en el ejercicio:
+#      - filename:    Ruta absoluta al binario ELF compilado (.ko o comprimido .ko.xz).
+#      - description: Propósito funcional del módulo redactado por el desarrollador (Loopback device driver).
+#      - license:     Licencia de código abierto (ej: GPL). Si se carga un módulo sin licencia
+#                     compatible con GPL, el kernel se marca como "tainted" (contaminado/privativo).
+#      - depends:     Árbol de módulos predecesores requeridos obligatoriamente antes de la carga.
+#
+# Paso 2.3: Herramientas de inserción y descarga en producción:
+#   - 'modprobe <modulo>': Carga inteligente resolviendo automáticamente dependencias cruzadas.
+#   - 'modprobe -r <modulo>': Descarga segura verificando que no esté en uso.
+#   - 'insmod' / 'rmmod': Comandos de bajo nivel que operan sobre rutas exactas de archivos .ko sin resolver dependencias.
 
 # ------------------------------------------------------------------------------
 # DEMO 3: Demostración de Inodos: Enlace Duro vs Simbólico Roto (Broken Symlink)
@@ -175,14 +203,44 @@ demo_ejercicio3_enlaces() {
 # ------------------------------------------------------------------------------
 # 💡 GUÍA PASO A PASO EN VIVO PARA MOSTRAR A LOS ALUMNOS (DEMO 3):
 # ------------------------------------------------------------------------------
-# Paso 3.1: Comparar números de inodo con 'ls -li':
-#   $ ls -li soluciones_demo/
-#   -> Señalar a los alumnos que 'demo_origen.txt' y 'demo_duro.txt' tienen el MISMO
-#      número de inodo y el contador de referencias es 2.
+# Paso 3.0: Explicar la separación fundamental: Inodo (Metadatos) vs Dentry (Nombre):
+#   -> ¿Qué es un Inodo (Index Node)?:
+#      Es la estructura física en disco que representa la existencia de un archivo.
+#      Almacena: tipo de archivo, permisos (rwx/octal), UID, GID, tamaño en bytes, marcas de
+#      tiempo (atime, mtime, ctime), contador de referencias de enlace (nlink) y la tabla de
+#      punteros o descriptores de extents hacia los bloques de datos físicos.
+#   -> ¿Dónde reside el nombre del archivo?:
+#      ¡EL NOMBRE NO EXISTE EN EL INODO!
+#      Un directorio en Linux es simplemente un archivo especial que contiene una tabla de
+#      entradas de directorio (dentries). Cada dentry es un par clave-valor:
+#      [ Nombre Textual Visible  --->  Número de Inodo en la partición ]
 #
-# Paso 3.2: Explicar por qué el enlace duro NO duplica espacio en disco:
-#   -> Ambos son simplemente dos nombres en el directorio que apuntan al mismo inodo.
-#   -> Si se borra el original con 'rm', el inodo decrementa su contador a 1 y sigue existiendo.
+# Paso 3.1: Enlace Duro (Hard Link - 'ln origen destino_duro'):
+#   -> Concepto: Crea una NUEVA entrada en el directorio (dentry) apuntando EXACTAMENTE
+#      al MISMO número de inodo que el archivo original.
+#   -> Consecuencias técnicas:
+#      1. El contador 'nlink' (Links) del inodo se incrementa (pasa de 1 a 2).
+#      2. Ambos nombres son equivalentes de primer nivel; no hay un "original" y una "copia".
+#      3. NO duplica espacio en disco: ambos comparten exactamente los mismos bloques de datos.
+#      4. Restricciones: No puede cruzar particiones (los inodos son únicos solo dentro de su
+#         propio sistema de archivos) y no se permite sobre directorios (para evitar bucles en el árbol).
+#
+# Paso 3.2: Enlace Simbólico (Soft Link / Symlink - 'ln -s origen destino_simbolico'):
+#   -> Concepto: Crea un INODO COMPLETAMENTE NUEVO e independiente en el sistema de archivos.
+#   -> Consecuencias técnicas:
+#      1. Posee su propio número de inodo diferente al original.
+#      2. Los bloques de datos de este nuevo inodo contienen únicamente la cadena de texto
+#         con la ruta (relativa o absoluta) hacia el archivo de destino.
+#      3. Su tamaño en bytes es exactamente igual a la cantidad de caracteres de la ruta destino.
+#      4. Ventajas: Puede cruzar distintas particiones, discos de red (NFS) y apuntar a directorios.
+#
+# Paso 3.3: Experimento de persistencia y Enlace Roto (Dangling / Broken Symlink):
+#   -> Si ejecutamos 'rm soluciones_demo/demo_origen.txt':
+#      1. Se elimina la dentry 'demo_origen.txt' y el kernel decrementa el contador 'nlink' del inodo de 2 a 1.
+#      2. El enlace duro 'demo_duro.txt' SIGUE ACCEDIENDO a los datos intactos porque el inodo tiene nlink = 1.
+#         Los bloques de datos físicos NO se liberan hasta que nlink llegue a 0 y no haya procesos con el archivo abierto.
+#      3. El enlace simbólico 'demo_simbolico.txt' queda "roto" (broken symlink): el inodo del link sigue vivo,
+#         pero al intentar abrirlo, el kernel resuelve la ruta hacia 'demo_origen.txt' y arroja error ENOENT (No such file).
 
 # ------------------------------------------------------------------------------
 # DEMO 4: Creación de Disco Virtual de 2 MB y Formateo ext3 con Journaling
@@ -215,13 +273,43 @@ demo_ejercicio4_filesystem() {
 # ------------------------------------------------------------------------------
 # 💡 GUÍA PASO A PASO EN VIVO PARA MOSTRAR A LOS ALUMNOS (DEMO 4):
 # ------------------------------------------------------------------------------
-# Paso 4.1: Mostrar la creación del archivo contenedor con ceros:
-#   $ dd if=/dev/zero of=disco.img bs=1M count=2
+# Paso 4.0: Explicar qué es un Sistema de Archivos y la arquitectura ext2/ext3/ext4:
+#   -> Almacenamiento en bruto vs Estructurado:
+#      Un disco o partición sin formatear es solo una secuencia masiva de sectores contiguos.
+#      Un sistema de archivos organiza el almacenamiento en estructuras que gestionan la
+#      jerarquía de carpetas, la asignación de bloques y la tolerancia a fallos.
+#   -> Componentes clave de ext3:
+#      1. Superbloque: Contiene los metadatos globales del volumen (tamaño de bloque, bloques totales,
+#         inodos totales, estado limpio/sucio, UUID y características como 'has_journal').
+#         Se replica en múltiples grupos de bloques como copia de seguridad contra corrupción.
+#      2. Tabla de Inodos: Espacio reservado para almacenar los descriptores de cada archivo.
+#      3. Mapas de bits (Bitmaps): Registros de 1s y 0s para saber qué bloques e inodos están libres/ocupados.
+#      4. Diario Transaccional (Journal): Bloque reservado para el registro previo de operaciones de metadatos.
 #
-# Paso 4.2: Formatear con ext3 forzado (-F):
-#   $ mkfs.ext3 -F disco.img
-#   -> Explicar el proceso de creación del superbloque, asignación de inodos y
-#      creación del diario transaccional (journaling).
+# Paso 4.1: Creación de un Disco Virtual en un archivo contenedor (Loopback Storage):
+#   $ dd if=/dev/zero of=soluciones_demo/disco_demo.img bs=1M count=2
+#   -> Explicación: Creamos un archivo plano de 2 Megabytes relleno de ceros binarios.
+#      Gracias al controlador 'loop' de Linux, este archivo regular puede montarse y tratarse
+#      como si fuera un disco rígido SATA físico (/dev/loopX).
+#
+# Paso 4.2: Formatear con ext3 y el concepto de Journaling (Diario Transaccional):
+#   $ mkfs.ext3 -F soluciones_demo/disco_demo.img
+#   -> ¿Por qué la bandera -F?: Fuerza a mkfs a formatear un archivo regular sin pedir confirmación interactiva.
+#   -> ¿Cuál es la gran diferencia de ext3 frente a ext2?:
+#      En ext2, un corte de luz dejaba el sistema en estado inconsistente, requiriendo un escaneo
+#      completo con 'fsck' que tardaba horas.
+#      ext3 introdujo el JOURNALING: Antes de modificar los metadatos en su ubicación definitiva,
+#      la operación se registra como una transacción en el diario circular. Al reiniciar tras una
+#      caída abrupta, el kernel solo reproduce las transacciones pendientes del journal en milisegundos.
+#
+# Paso 4.3: Inspección del Superbloque con 'dumpe2fs -h' o 'tune2fs -l':
+#   $ dumpe2fs -h soluciones_demo/disco_demo.img
+#   -> Explicación de los campos obligatorios del ejercicio:
+#      - Filesystem UUID: Identificador hexadecimal único de 128 bits asignado al volumen (usado en /etc/fstab).
+#      - Block count:     Cantidad total de bloques lógicos (ej: 2048 bloques de 1 KB para 2 MB).
+#      - Inode count:     Cantidad de inodos preasignados disponibles para crear archivos y directorios.
+#      - Block size:      Tamaño de bloque del sistema de archivos (1024 bytes en particiones chicas, 4096 bytes estándar).
+#      - Filesystem features: Lista de capacidades activas; la presencia de 'has_journal' confirma el modo transaccional.
 
 # ------------------------------------------------------------------------------
 # DEMO 5: Ejecución del Evaluador Criptográfico de la Demo
