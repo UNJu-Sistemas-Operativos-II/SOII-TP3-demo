@@ -47,9 +47,15 @@ demo_ejercicio1_dispositivos() {
 # ------------------------------------------------------------------------------
 # Paso 1.1: Listar el contenido de /dev con 'ls -l /dev | head -n 15':
 #   $ ls -l /dev
-#   -> Explicación: Observe la primera letra de los permisos:
-#      'c' = Carácter (flujo secuencial de bytes sin buffering, ej: terminales, urandom).
-#      'b' = Bloque (dispositivos direccionables por sectores, ej: sda, loop, nvme).
+#   -> Explicación: Observe el primer carácter de los permisos (tipo de archivo en Linux/POSIX):
+#      'c' = Dispositivo de carácter (character device: flujo de bytes sin buffering, ej: /dev/tty, /dev/urandom).
+#      'b' = Dispositivo de bloque (block device: direccionable por sectores independientes, ej: /dev/sda, /dev/loop0).
+#      '-' = Archivo regular (regular file: texto, binarios, librerías, scripts).
+#      'd' = Directorio (directory: tabla que asocia nombres de archivo con inodos).
+#      'l' = Enlace simbólico (symbolic link: puntero que almacena la ruta a otro archivo).
+#      'p' = Tubería con nombre o FIFO (named pipe: canal IPC unidireccional persistente en VFS).
+#      's' = Socket de dominio UNIX (socket: canal IPC bidireccional local, ej: /dev/log).
+#      * Nota didáctica: En /dev encontramos casi exclusivamente 'c' y 'b', más algunos enlaces 'l' y sockets 's'.
 #
 # Paso 1.2: Explicar las columnas de tamaño (Major y Minor):
 #   $ ls -l /dev/null /dev/zero /dev/tty
