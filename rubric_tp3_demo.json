@@ -1,9 +1,9 @@
 {
   "tp_metadata": {
     "tp_id": "SOII-2026-TP3-DEMO",
-    "title": "TP N° 3: Demostración Docente - Entrada/Salida y Sistema de Archivos",
+    "title": "TP N° 3: Demostración Docente - Entrada/Salida, VFS y Filesystems",
     "catedra": "Sistemas Operativos II - UNJu Facultad de Ingeniería",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "security": {
     "algorithm": "SHA-256 + Salted HMAC",
@@ -12,9 +12,9 @@
   "max_score": 100,
   "exercises": {
     "seccion1_conceptos": {
-      "title": "Sección 1: Conceptos Fundamentales de E/S y Sistema de Archivos (Demo)",
-      "weight": 35,
-      "feedback": "Demostración docente sobre la arquitectura de E/S, VFS y journaling.",
+      "title": "Sección 1: Conceptos Fundamentales de E/S y VFS (Demo)",
+      "weight": 20,
+      "feedback": "Demostración docente sobre arquitectura de E/S, VFS y journaling.",
       "hashes": {
         "q1_filosofia_io": "252a98fe7c9f6312bb2c717e502f45d00c617487b8edd930ba59b37b3d2cb92a",
         "q2_major_minor": "ed3710cf731ff9b4c080005ffc53436c45dba2f5b37e03e27765b979a4d7c465",
@@ -23,32 +23,56 @@
         "q5_ext3_journaling": "224c7b2921c78cd37ab5cfec1febea51fe3f74224cc1aa9de1652e5ef4651686"
       }
     },
-    "seccion2_pila_io": {
-      "title": "Sección 2: Pila de Software de Entrada/Salida en Linux (Demo)",
-      "weight": 35,
-      "feedback": "Demostración de la pila de abstracción VFS y controladores de hardware en vivo.",
+    "seccion2_clasificacion_switches": {
+      "title": "Sección 2: Matriz de Clasificación con Switches Segmentados (Demo)",
+      "weight": 20,
+      "feedback": "Demostración en vivo de clasificación de archivos especiales e inodos.",
+      "hashes": {
+        "sw1_disp_tty": "0e417e35ee0958c00e65eccf4060b9068ffbaf4eb659e89077790957b8241db0",
+        "sw2_disp_sda": "c35ac906f828d2a947e336d13eb9986dcb1ea26adaa791b60927a6170c12f6c4",
+        "sw3_link_hard": "182f01541d3246e04ae07d5ff5d5c843d17e69622a0f79788d01e49dece825b5",
+        "sw4_link_soft": "22cee23736f1eeb6a33cfa79c28ccb6729907d26f4f5afd9d5ebf5b264416227",
+        "sw5_proc_cpuinfo": "a585acc5d94546a17a433923d01ba4796d064de16b4eaf753440938e9e530042",
+        "sw6_ext4_superblock": "85694f978d4fec45b1f778d76ae688c02fc09c896fc6bf5470e70419c7e26e1b"
+      }
+    },
+    "seccion3_planificador_disco": {
+      "title": "Sección 3: Laboratorio Interactivo de Planificación de Disco (Demo)",
+      "weight": 25,
+      "feedback": "Demostración del Elevator Scheduler (SCAN) y SSTF frente a FCFS.",
+      "hashes": {
+        "sim_desplazamiento_scan": "0215a4b91fbc64f01fcf8bbc0b77203fce2a28620e94fac01dbfbbe554896e77",
+        "sim_desplazamiento_sstf": "33b23949d4314f4183242f318afbb96d0948dd561109ed789a49d63365d900c8",
+        "sim_ventaja_elevator": "f8595069830752ed3d6d07d6e10da54e1d7ae30f7c2cd5fbd6741cd332d239dc",
+        "sim_algoritmo_linux_default": "1e52fb0bef8a4455f1a2ff53b89f7dfad1fe184d91478380a9db9b463c0eb850"
+      }
+    },
+    "seccion4_cadena_vfs": {
+      "title": "Sección 4: Inspector de la Cadena de Abstracción VFS (Demo)",
+      "weight": 20,
+      "feedback": "Demostración de la jerarquía de estructuras de VFS en el kernel.",
       "type": "ordered_list",
-      "list_key": "orden_pila_io",
+      "list_key": "orden_cadena_vfs",
       "hashes": {
         "items": [
-          "fa644368c2f170d0bfb2710606a48940c0859bae80facdb2e642c02fb17277f1",
-          "cf688baa3d3c3bc59d2eaf5f764d5f2ba0a2d24499a407845be9c88ab9c6b4a8",
-          "fccb7a1ebe944d45a30900cf808397cb1bd0285d9f34aa69f1febc6b2663c866",
-          "00b790fb795b72e9e75889ba0309cbd5d4a8bc55a319d2871219390318e78018",
-          "7cf1832951a25df6c7cf89b43dc451837a3a798f404546bfee63189e488b1826",
-          "1d15551faed67087fee295b4cae4adbad09a4dc5977479a835e3325301efb265"
+          "46a68c085bc45929f8af61d2a661392bc75f96efeb6b9617147b73684270779e",
+          "33fbc93d150094745f8bf38886ccfdfa1ae923ad7028e0ffabe56024a9de93b6",
+          "2245807cdcfe9283582ea456ec1c6025c152e35843af29bed9b61f1cb6e3fa4d",
+          "96f4db4a1529c7fe4b2426b2dba9d7e45ffe634a828fc1f8914da0493f5b7352",
+          "781683f7c994ff0a2ccd7aafc6327daaaa4cfbf31c42bbdcca37522ec31e090e",
+          "02abf63e6b0873307515d21a3355e9ae5a26a9c1a4ea3afc57bc12be099d30b4"
         ]
       }
     },
-    "seccion3_analisis_ext3": {
-      "title": "Sección 3: Comparativa de Sistemas de Archivos y Metadatos ext3 (Demo)",
-      "weight": 30,
+    "seccion5_analisis_ext3": {
+      "title": "Sección 5: Comparativa Técnica de Filesystems y Metadatos ext3 (Demo)",
+      "weight": 15,
       "feedback": "Demostración del sistema ext3 con journaling y bloques indirectos.",
       "hashes": {
-        "journaling_mode": "bc6081f11b5b223cc634d911857c0a6036c260a02043092944ff40af361c193c",
-        "tamano_maximo_archivo_ext3": "442ca3eb69b91319bf7868431b41bef2cb502ea442f24487e068d38fd16469e9",
-        "tamano_maximo_fs_ext3": "8abb1c843da4e69817a7f74b49aea5718f682fb1b465fb34e78d3c9f0c2e0dca",
-        "mecanismo_ext3": "f9ca6900b958ddbd41a1e0dab7ce182db611f462554cd0b51b34c531037d00c5"
+        "journaling_mode": "f9edccfdb70d64651902ebbc3719d686e333a2adac9cfa2a6035b0cb7ada59db",
+        "tamano_maximo_archivo_ext3": "fc144907f3b1de35bb0571219248ee6ef495199843837885ae2196f66741d68e",
+        "tamano_maximo_fs_ext3": "b958a545cae2e9108a10624971e978d9d84ec0039125f938bed5c618c0117c8c",
+        "mecanismo_ext3": "e3ee5aa663f59477d882878672d16e6452c24d36481b534abcb9fdf642de5aeb"
       }
     }
   }

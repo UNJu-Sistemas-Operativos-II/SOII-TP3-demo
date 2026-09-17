@@ -12,17 +12,31 @@
     "q4_enlace_duro_vs_simbolico": "A",
     "q5_ext3_journaling": "C"
   },
-  "seccion2_pila_io": {
-    "orden_pila_io": [
+  "seccion2_clasificacion_switches": {
+    "sw1_disp_tty": "CARACTER",
+    "sw2_disp_sda": "BLOQUE",
+    "sw3_link_hard": "MISMO_INODO",
+    "sw4_link_soft": "NUEVO_INODO",
+    "sw5_proc_cpuinfo": "VIRTUAL_RAM",
+    "sw6_ext4_superblock": "PERSISTENTE_DISCO"
+  },
+  "seccion3_planificador_disco": {
+    "sim_desplazamiento_scan": "331",
+    "sim_desplazamiento_sstf": "236",
+    "sim_ventaja_elevator": "MINIMIZA_MOVIMIENTO_CABEZAL",
+    "sim_algoritmo_linux_default": "DEADLINE_BFQ"
+  },
+  "seccion4_cadena_vfs": {
+    "orden_cadena_vfs": [
       "APP",
-      "SYSCALL",
-      "VFS",
-      "FS_DRIVER",
-      "DEVICE_DRIVER",
-      "HARDWARE"
+      "FD_TABLE",
+      "FILE_STRUCT",
+      "DENTRY",
+      "INODE",
+      "EXTENTS_BLOCKS"
     ]
   },
-  "seccion3_analisis_ext3": {
+  "seccion5_analisis_ext3": {
     "journaling_mode": "ORDERED",
     "tamano_maximo_archivo_ext3": "2TB",
     "tamano_maximo_fs_ext3": "16TB",

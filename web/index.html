@@ -1,44 +1,85 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SO II - TP 3 DEMO: Demostración Docente E/S y Filesystems</title>
-    <link rel="stylesheet" href="styles.css?v=3.0">
+    <title>SO II - TP 3 DEMO: Demostración Docente E/S, VFS y ext3</title>
+    <link rel="stylesheet" href="styles.css?v=3.5">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 </head>
 <body>
-    <div class="app-container">
-        <header class="hero-header">
-            <div class="badge">UNJu — DEMOSTRACIÓN DOCENTE EN VIVO</div>
-            <h1>Sistemas Operativos II — Trabajo Práctico N° 3 (Demo)</h1>
-            <p class="subtitle">Demostración en Vivo: Arquitectura de E/S, Abstracción VFS y Transición de ext2 a ext3/ext4</p>
+    <div class="bg-glow"></div>
+
+    <div class="container">
+        <header class="header-hero">
+            <div class="header-meta">
+                <div class="badge-group">
+                    <span class="badge-tag purple">👨‍🏫 UNJu — DEMOSTRACIÓN DOCENTE EN VIVO</span>
+                    <span class="badge-tag cyan">Sistemas Operativos II (Plan 2022)</span>
+                    <span class="badge-tag green">Ciclo Lectivo 2026</span>
+                </div>
+                <button id="theme-toggle-btn" class="btn btn-secondary">🌓 Tema</button>
+            </div>
+
+            <h1 class="main-title">Trabajo Práctico N° 3: Demostración en Vivo (E/S, VFS y ext3)</h1>
+            <p class="subtitle">Laboratorio de Demostración Docente para Proyección en Clase: Elevator Scheduler, VFS y Filesystems</p>
+
+            <div class="academic-info">
+                <div><strong>Cátedra:</strong> Sistemas Operativos II</div>
+                <div><strong>Profesora Titular:</strong> Ing. María Fernanda Vázquez</div>
+                <div><strong>Docente Responsable en Vivo:</strong> Ing. Fabio Damián Argañaraz Azua (JTP)</div>
+                <div><strong>Uso:</strong> Live-Coding (20 min) + Solución 100/100 Pts Verificada</div>
+            </div>
+
+            <div class="student-grid">
+                <div class="input-group">
+                    <label for="student-name">DOCENTE RESPONSABLE</label>
+                    <input type="text" id="student-name" value="Ing. Fabio Damián Argañaraz Azua (Docente)" class="form-control" readonly>
+                </div>
+                <div class="input-group">
+                    <label for="student-lu">IDENTIFICADOR DOCENTE</label>
+                    <input type="text" id="student-lu" value="DOCENTE-01" class="form-control" readonly>
+                </div>
+                <div class="input-group">
+                    <label for="student-career">CÁTEDRA</label>
+                    <input type="text" id="student-career" value="Sistemas Operativos II - UNJu" class="form-control" readonly>
+                </div>
+                <div class="input-group">
+                    <label for="student-github">USUARIO GITHUB</label>
+                    <input type="text" id="student-github" value="fabioarganaraz" class="form-control" readonly>
+                </div>
+            </div>
         </header>
 
-        <div class="glass-card student-card">
-            <h2>👨‍🏫 Datos del Docente</h2>
-            <div class="input-grid">
-                <div class="input-group">
-                    <label for="student-name">Docente Responsable:</label>
-                    <input type="text" id="student-name" value="Ing. Fabio Damián Argañaraz Azua (Docente)">
+        <div class="sticky-toolbar">
+            <div class="progress-container">
+                <div class="progress-labels">
+                    <span>Progreso de la Demostración Docente</span>
+                    <span id="progress-percentage">100% (25/25 completados)</span>
                 </div>
-                <div class="input-group">
-                    <label for="student-lu">Identificador Docente:</label>
-                    <input type="text" id="student-lu" value="DOCENTE-01">
+                <div class="progress-track">
+                    <div class="progress-bar-fill" id="progress-bar" style="width: 100%;"></div>
                 </div>
-                <div class="input-group">
-                    <label for="student-github">Usuario GitHub:</label>
-                    <input type="text" id="student-github" value="fabioarganaraz">
-                </div>
+            </div>
+
+            <div class="toolbar-actions">
+                <button class="btn btn-outline-amber" id="btn-toggle-all-biblio">📚 Desplegar Bibliografía</button>
+                <button class="btn btn-primary" id="btn-export-json">💾 Descargar respuestas_tp3.json</button>
             </div>
         </div>
 
-        <section class="glass-card section-card">
-            <div class="section-header">
-                <span class="step-num">01</span>
-                <h2>Conceptos Fundamentales de E/S y Sistema de Archivos (Demo)</h2>
+        <!-- SECCIÓN 1: CONCEPTOS DEMO -->
+        <section class="glass-card section-block" id="sec-1">
+            <div class="section-title-row">
+                <div class="title-with-badge">
+                    <span class="step-num">01</span>
+                    <h2>Conceptos Fundamentales de E/S y VFS (Demo)</h2>
+                </div>
+                <span class="status-badge completed" id="badge-sec-1">✓ Completado</span>
             </div>
 
             <div class="biblio-guide">
@@ -47,169 +88,320 @@
                     <span class="biblio-arrow">▼</span>
                 </div>
                 <div class="biblio-body">
-                    <div class="biblio-item"><strong>Silberschatz:</strong> Cap. 12 (E/S) y Cap. 10 (Archivos) <span class="pages">Cap. 10 y 12</span></div>
+                    <div class="biblio-item"><strong>Silberschatz:</strong> Cap. 10 y 12 <span class="pages">Cap. 10 y 12</span></div>
                     <div class="biblio-item"><strong>Carretero:</strong> Cap. 6 y 7 <span class="pages">Cap. 6 y 7</span></div>
-                    <div class="biblio-item"><strong>Diapositivas Cátedra:</strong> Unidad 3 (Slides 1 a 28) <span class="pages">U3</span></div>
+                    <div class="biblio-item"><strong>Diapositivas Cátedra:</strong> Unidad 3 <span class="pages">U3</span></div>
                 </div>
             </div>
 
-            <div class="question-block">
-                <p class="question-title">1. En Unix y Linux, ¿cómo se representa e interactúa con un dispositivo periférico?</p>
-                <div class="options-grid">
-                    <label class="option-label"><input type="radio" name="q1_filosofia_io" value="A"> Se accede mediante interrupciones de hardware no controladas por el kernel.</label>
-                    <label class="option-label"><input type="radio" name="q1_filosofia_io" value="B"> A través de protocolos de red propietarios obligatorios para cada puerto.</label>
-                    <label class="option-label"><input type="radio" name="q1_filosofia_io" value="C" checked> Todos los dispositivos se exponen como archivos en /dev y responden a llamadas estándar.</label>
-                    <label class="option-label"><input type="radio" name="q1_filosofia_io" value="D"> Solo pueden ser leídos y escritos desde el firmware UEFI de la máquina.</label>
+            <div class="question-card">
+                <p class="question-header">1. En Unix y Linux, ¿cómo se representa e interactúa con un dispositivo periférico?</p>
+                <div class="radio-group">
+                    <label class="radio-card">
+                        <input type="radio" name="q1_filosofia_io" value="C" checked>
+                        <div class="radio-content">
+                            <span class="radio-opt">C</span>
+                            <span class="radio-text">Todos los dispositivos se exponen como archivos en <code>/dev</code> y responden a llamadas estándar del kernel.</span>
+                        </div>
+                    </label>
                 </div>
             </div>
 
-            <div class="question-block">
-                <p class="question-title">2. ¿Qué función desempeñan los números Major y Minor en /dev?</p>
-                <div class="options-grid">
-                    <label class="option-label"><input type="radio" name="q2_major_minor" value="A"> Indican el número de bloques transferidos por segundo en la unidad.</label>
-                    <label class="option-label"><input type="radio" name="q2_major_minor" value="B" checked> El número Major mapea al driver correspondiente y el Minor identifica la instancia o partición.</label>
-                    <label class="option-label"><input type="radio" name="q2_major_minor" value="C"> Representan el PID del proceso de usuario y el canal DMA asignado.</label>
-                    <label class="option-label"><input type="radio" name="q2_major_minor" value="D"> Establecen los límites de cuota de disco asignados al superusuario.</label>
+            <div class="question-card">
+                <p class="question-header">2. ¿Qué función desempeñan los números Major y Minor en /dev?</p>
+                <div class="radio-group">
+                    <label class="radio-card">
+                        <input type="radio" name="q2_major_minor" value="B" checked>
+                        <div class="radio-content">
+                            <span class="radio-opt">B</span>
+                            <span class="radio-text">El número Major mapea al driver correspondiente y el Minor identifica la instancia o partición física.</span>
+                        </div>
+                    </label>
                 </div>
             </div>
 
-            <div class="question-block">
-                <p class="question-title">3. ¿Qué atributo NO forma parte de la estructura de metadatos de un Inodo?</p>
-                <div class="options-grid">
-                    <label class="option-label"><input type="radio" name="q3_vfs_inodo" value="A"> Los permisos de lectura, escritura y ejecución.</label>
-                    <label class="option-label"><input type="radio" name="q3_vfs_inodo" value="B"> El tamaño del archivo en bytes y fechas atime/mtime.</label>
-                    <label class="option-label"><input type="radio" name="q3_vfs_inodo" value="C"> Los punteros a los bloques de almacenamiento físico.</label>
-                    <label class="option-label"><input type="radio" name="q3_vfs_inodo" value="D" checked> El nombre del archivo (almacenado en las entradas de directorio dentry).</label>
+            <div class="question-card">
+                <p class="question-header">3. ¿Qué atributo NO forma parte de la estructura de metadatos de un Inodo?</p>
+                <div class="radio-group">
+                    <label class="radio-card">
+                        <input type="radio" name="q3_vfs_inodo" value="D" checked>
+                        <div class="radio-content">
+                            <span class="radio-opt">D</span>
+                            <span class="radio-text">El nombre textual visible del archivo (almacenado en las entradas de directorio dentry).</span>
+                        </div>
+                    </label>
                 </div>
             </div>
 
-            <div class="question-block">
-                <p class="question-title">4. En relación con los enlaces, ¿qué diferencia a un Hard Link de un Soft Link?</p>
-                <div class="options-grid">
-                    <label class="option-label"><input type="radio" name="q4_enlace_duro_vs_simbolico" value="A" checked> El hard link apunta al inodo existente; el soft link apunta al nombre de ruta como puntero simbólico.</label>
-                    <label class="option-label"><input type="radio" name="q4_enlace_duro_vs_simbolico" value="B"> El hard link duplica los datos en disco y el soft link los comprime.</label>
-                    <label class="option-label"><input type="radio" name="q4_enlace_duro_vs_simbolico" value="C"> El hard link se rompe si se borra el archivo original.</label>
-                    <label class="option-label"><input type="radio" name="q4_enlace_duro_vs_simbolico" value="D"> Ambos son idénticos y usan el mismo inodo con distintos nombres de usuario.</label>
+            <div class="question-card">
+                <p class="question-header">4. En relación con los enlaces, ¿qué diferencia a un Hard Link de un Soft Link?</p>
+                <div class="radio-group">
+                    <label class="radio-card">
+                        <input type="radio" name="q4_enlace_duro_vs_simbolico" value="A" checked>
+                        <div class="radio-content">
+                            <span class="radio-opt">A</span>
+                            <span class="radio-text">El hard link apunta al inodo existente; el soft link apunta al nombre de ruta como puntero simbólico.</span>
+                        </div>
+                    </label>
                 </div>
             </div>
 
-            <div class="question-block">
-                <p class="question-title">5. ¿Cuál fue la innovación central introducida por ext3 frente a ext2?</p>
-                <div class="options-grid">
-                    <label class="option-label"><input type="radio" name="q5_ext3_journaling" value="A"> Reemplazo de bloques de 4 KB por páginas de memoria virtual de 64 KB.</label>
-                    <label class="option-label"><input type="radio" name="q5_ext3_journaling" value="B"> Eliminación total de la memoria intermedia de disco.</label>
-                    <label class="option-label"><input type="radio" name="q5_ext3_journaling" value="C" checked> Inclusión de Journaling (registro de transacciones) para recuperación rápida tras fallos.</label>
-                    <label class="option-label"><input type="radio" name="q5_ext3_journaling" value="D"> Compatibilidad nativa exclusiva con sistemas de archivos FAT32.</label>
+            <div class="question-card">
+                <p class="question-header">5. ¿Cuál fue la innovación central introducida por ext3 frente a ext2?</p>
+                <div class="radio-group">
+                    <label class="radio-card">
+                        <input type="radio" name="q5_ext3_journaling" value="C" checked>
+                        <div class="radio-content">
+                            <span class="radio-opt">C</span>
+                            <span class="radio-text">Inclusión de Journaling (registro transaccional) para recuperación rápida tras fallos.</span>
+                        </div>
+                    </label>
                 </div>
             </div>
         </section>
 
-        <section class="glass-card section-card">
-            <div class="section-header">
-                <span class="step-num">02</span>
-                <h2>Simulador Interactivo: Pila de Abstracción VFS y ext3 (Demo)</h2>
+        <!-- SECCIÓN 2: SWITCHES DEMO -->
+        <section class="glass-card section-block" id="sec-2">
+            <div class="section-title-row">
+                <div class="title-with-badge">
+                    <span class="step-num">02</span>
+                    <h2>Matriz de Clasificación Técnica con Switches Segmentados (Demo)</h2>
+                </div>
+                <span class="status-badge completed" id="badge-sec-2">✓ Completado</span>
             </div>
 
-            <div class="dnd-scenario">
-                <div class="scenario-badge">Escenario A: Pila de Software de Entrada/Salida en Linux</div>
-                <p class="scenario-context">
-                    Capas arquitectónicas desde el espacio de usuario hasta el hardware físico:
-                </p>
-
-                <div class="action-bank-wrapper">
-                    <div class="bank-title">📦 Banco de Capas de E/S:</div>
-                    <div class="action-bank" id="bank-stack">
-                        <div class="dnd-item" draggable="true" data-id="FS_DRIVER">🗂️ Sistema de Archivos Concreto (ext3/Buffer Cache)</div>
-                        <div class="dnd-item" draggable="true" data-id="HARDWARE">💾 Controlador de Hardware y Disco Físico</div>
-                        <div class="dnd-item" draggable="true" data-id="APP">💻 Aplicación de Usuario (User Space)</div>
-                        <div class="dnd-item" draggable="true" data-id="DEVICE_DRIVER">⚙️ Manejador de Dispositivo (Device Driver)</div>
-                        <div class="dnd-item" draggable="true" data-id="SYSCALL">📞 Interfaz de Llamadas al Sistema (Syscalls)</div>
-                        <div class="dnd-item" draggable="true" data-id="VFS">🌐 Virtual File System (VFS)</div>
+            <div class="switch-grid">
+                <div class="switch-card">
+                    <div class="switch-info">
+                        <span class="switch-name">/dev/tty</span>
+                        <span class="switch-desc">Terminal de control del proceso actual</span>
+                    </div>
+                    <div class="segmented-control" data-key="sw1_disp_tty">
+                        <button type="button" class="seg-btn active" data-value="CARACTER">Carácter ('c')</button>
+                        <button type="button" class="seg-btn" data-value="BLOQUE">Bloque ('b')</button>
                     </div>
                 </div>
 
-                <div class="dropzone-container">
-                    <div class="dropzone-header">
-                        <span class="status-indicator">🏗️</span>
-                        <h4>Pila de Abstracción de E/S (6 niveles)</h4>
-                        <button class="btn-reset" onclick="resetZone('zone-stack')">🔄 Limpiar</button>
+                <div class="switch-card">
+                    <div class="switch-info">
+                        <span class="switch-name">/dev/sda</span>
+                        <span class="switch-desc">Disco rígido direccionable por sectores independientes</span>
                     </div>
-                    <div class="dropzone" id="zone-stack" data-target="stack" data-max="6">
-                        <div class="drop-placeholder">Suelte aquí las 6 capas...</div>
+                    <div class="segmented-control" data-key="sw2_disp_sda">
+                        <button type="button" class="seg-btn" data-value="CARACTER">Carácter ('c')</button>
+                        <button type="button" class="seg-btn active" data-value="BLOQUE">Bloque ('b')</button>
                     </div>
-                    <div class="sim-feedback" id="feedback-stack"></div>
                 </div>
-            </div>
 
-            <div class="dnd-scenario" style="margin-top: 2rem;">
-                <div class="scenario-badge">Escenario B: Comparativa de Sistemas de Archivos y Metadatos en ext3 (Demo)</div>
-                <p class="scenario-context">
-                    Parámetros de diseño del sistema ext3 explicados en la clase magistral:
-                </p>
-
-                <div class="buddy-calc-grid">
-                    <div class="calc-box">
-                        <h5>1. Modo de Journaling Predeterminado</h5>
-                        <p class="box-desc">Modo predeterminado de registro ordenado:</p>
-                        <div class="input-group">
-                            <select id="ext3-journaling">
-                                <option value="ORDERED" selected>data=ordered (Metadatos en journal tras ordenar bloques de datos)</option>
-                                <option value="JOURNAL">data=journal</option>
-                                <option value="WRITEBACK">data=writeback</option>
-                            </select>
-                        </div>
+                <div class="switch-card">
+                    <div class="switch-info">
+                        <span class="switch-name">Enlace Duro (ln)</span>
+                        <span class="switch-desc">Impacto sobre el identificador de nodo-i</span>
                     </div>
-
-                    <div class="calc-box">
-                        <h5>2. Tamaño Máximo de Archivo en ext3</h5>
-                        <p class="box-desc">Límite de tamaño de archivo con bloques de 4 KB:</p>
-                        <div class="input-group">
-                            <select id="ext3-max-file">
-                                <option value="2TB" selected>2 TB (Límite estándar de ext3)</option>
-                                <option value="16TB">16 TB</option>
-                                <option value="1EB">1 EB</option>
-                            </select>
-                        </div>
+                    <div class="segmented-control" data-key="sw3_link_hard">
+                        <button type="button" class="seg-btn active" data-value="MISMO_INODO">Mismo Inodo (nlink + 1)</button>
+                        <button type="button" class="seg-btn" data-value="NUEVO_INODO">Nuevo Inodo</button>
                     </div>
+                </div>
 
-                    <div class="calc-box">
-                        <h5>3. Tamaño Máximo del Volumen ext3</h5>
-                        <p class="box-desc">Límite de volumen del filesystem ext3:</p>
-                        <div class="input-group">
-                            <select id="ext3-max-fs">
-                                <option value="16TB" selected>16 TB (Límite de ext3 con bloques de 4 KB)</option>
-                                <option value="1EB">1 EB</option>
-                                <option value="32TB">32 TB</option>
-                            </select>
-                        </div>
+                <div class="switch-card">
+                    <div class="switch-info">
+                        <span class="switch-name">Enlace Simbólico (ln -s)</span>
+                        <span class="switch-desc">Puntero textual independiente</span>
                     </div>
+                    <div class="segmented-control" data-key="sw4_link_soft">
+                        <button type="button" class="seg-btn" data-value="MISMO_INODO">Mismo Inodo</button>
+                        <button type="button" class="seg-btn active" data-value="NUEVO_INODO">Nuevo Inodo Independiente</button>
+                    </div>
+                </div>
 
-                    <div class="calc-box">
-                        <h5>4. Mecanismo de Asignación de Bloques</h5>
-                        <p class="box-desc">Mecanismo utilizado en ext3 antes de la llegada de extents:</p>
-                        <div class="input-group">
-                            <select id="ext3-mecanismo">
-                                <option value="BLOQUES_INDIRECTOS_CON_JOURNAL" selected>Punteros directos e indirectos con diario transaccional</option>
-                                <option value="EXTENTS">Extents</option>
-                                <option value="FAT">Tabla FAT</option>
-                            </select>
-                        </div>
+                <div class="switch-card">
+                    <div class="switch-info">
+                        <span class="switch-name">/proc/cpuinfo</span>
+                        <span class="switch-desc">Pseudo-archivo del kernel con estadísticas de CPU</span>
+                    </div>
+                    <div class="segmented-control" data-key="sw5_proc_cpuinfo">
+                        <button type="button" class="seg-btn active" data-value="VIRTUAL_RAM">Virtual en RAM</button>
+                        <button type="button" class="seg-btn" data-value="PERSISTENTE_DISCO">Persistente en Disco</button>
+                    </div>
+                </div>
+
+                <div class="switch-card">
+                    <div class="switch-info">
+                        <span class="switch-name">Superbloque ext4</span>
+                        <span class="switch-desc">Metadatos globales de la partición</span>
+                    </div>
+                    <div class="segmented-control" data-key="sw6_ext4_superblock">
+                        <button type="button" class="seg-btn" data-value="VIRTUAL_RAM">Virtual en RAM</button>
+                        <button type="button" class="seg-btn active" data-value="PERSISTENTE_DISCO">Persistente en Disco</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <div class="glass-card actions-card">
-            <button class="btn-export" id="btn-export">
-                <span>📥 Descargar respuestas_tp3.json</span>
+        <!-- SECCIÓN 3: SIMULADOR DE DISCO DEMO -->
+        <section class="glass-card section-block" id="sec-3">
+            <div class="section-title-row">
+                <div class="title-with-badge">
+                    <span class="step-num">03</span>
+                    <h2>Laboratorio Interactivo: Simulador del Elevator Scheduler (Demo)</h2>
+                </div>
+                <span class="status-badge completed" id="badge-sec-3">✓ Completado</span>
+            </div>
+
+            <div class="disk-cockpit">
+                <div class="cockpit-header">
+                    <div class="workload-info">
+                        <span class="badge-tag cyan">Cola: [98, 183, 37, 122, 14, 124, 65, 67]</span>
+                        <span class="badge-tag purple">Cabezal: Cilindro 53</span>
+                        <span class="badge-tag green">Rango: 0 - 199</span>
+                    </div>
+                    <div class="algo-pill-group">
+                        <button type="button" class="algo-btn active" data-algo="SCAN">SCAN (Elevator)</button>
+                        <button type="button" class="algo-btn" data-algo="SSTF">SSTF</button>
+                        <button type="button" class="algo-btn" data-algo="FCFS">FCFS</button>
+                        <button type="button" class="algo-btn" data-algo="LOOK">LOOK</button>
+                    </div>
+                </div>
+
+                <div class="svg-canvas-wrapper">
+                    <svg id="disk-svg" viewBox="0 0 800 240" class="disk-svg"></svg>
+                </div>
+
+                <div class="sim-metrics-panel">
+                    <div class="metric-box">
+                        <span class="metric-label">Algoritmo Activo</span>
+                        <span class="metric-val" id="metric-algo-name">SCAN (Elevator)</span>
+                    </div>
+                    <div class="metric-box">
+                        <span class="metric-label">Secuencia de Atención</span>
+                        <span class="metric-val-mono" id="metric-sequence">53 → 65 → 67 → 98 → 122 → 124 → 183 → 199 → 37 → 14</span>
+                    </div>
+                    <div class="metric-box highlight">
+                        <span class="metric-label">Desplazamiento Total</span>
+                        <span class="metric-val highlight" id="metric-total-seek">331 Cilindros</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sim-questions-grid">
+                <div class="calc-card">
+                    <h5>1. Desplazamiento Total en SCAN</h5>
+                    <div class="input-group">
+                        <select id="sim-desplazamiento-scan" class="form-control">
+                            <option value="331" selected>331 cilindros ((199-53) + (199-14))</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="calc-card">
+                    <h5>2. Desplazamiento Total en SSTF</h5>
+                    <div class="input-group">
+                        <select id="sim-desplazamiento-sstf" class="form-control">
+                            <option value="236" selected>236 cilindros (53→65→67→37→14→98→122→124→183)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="calc-card">
+                    <h5>3. Ventaja del Elevator Scheduler</h5>
+                    <div class="input-group">
+                        <select id="sim-ventaja-elevator" class="form-control">
+                            <option value="MINIMIZA_MOVIMIENTO_CABEZAL" selected>Ordena peticiones por sector y cercanía física, minimizando movimientos bruscos del cabezal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="calc-card">
+                    <h5>4. Planificador en Linux Moderno</h5>
+                    <div class="input-group">
+                        <select id="sim-algoritmo-linux-default" class="form-control">
+                            <option value="DEADLINE_BFQ" selected>Deadline Scheduler y BFQ (Budget Fair Queueing) con colas temporizadas</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: CADENA VFS DEMO -->
+        <section class="glass-card section-block" id="sec-4">
+            <div class="section-title-row">
+                <div class="title-with-badge">
+                    <span class="step-num">04</span>
+                    <h2>Inspector de la Cadena de Abstracción VFS (Demo)</h2>
+                </div>
+                <span class="status-badge completed" id="badge-sec-4">✓ Completado</span>
+            </div>
+
+            <div class="dropzone-container">
+                <div class="dropzone-header">
+                    <h4>🔗 Cadena de Resolución en VFS (Resuelta para Demostración)</h4>
+                </div>
+                <div class="dropzone" id="zone-vfs" data-target="vfs" data-max="6"></div>
+                <div class="sim-feedback success" style="display:block;">✅ Cadena VFS de demostración completa.</div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: EXT3 DEMO -->
+        <section class="glass-card section-block" id="sec-5">
+            <div class="section-title-row">
+                <div class="title-with-badge">
+                    <span class="step-num">05</span>
+                    <h2>Comparativa Técnica de Filesystems y Metadatos ext3 (Demo)</h2>
+                </div>
+                <span class="status-badge completed" id="badge-sec-5">✓ Completado</span>
+            </div>
+
+            <div class="sim-questions-grid">
+                <div class="calc-card">
+                    <h5>1. Modo de Journaling Predeterminado</h5>
+                    <div class="input-group">
+                        <select id="ext3-journaling" class="form-control">
+                            <option value="ORDERED" selected>data=ordered (Metadatos en journal tras ordenar bloques de datos)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="calc-card">
+                    <h5>2. Tamaño Máximo de Archivo en ext3</h5>
+                    <div class="input-group">
+                        <select id="ext3-max-file" class="form-control">
+                            <option value="2TB" selected>2 TB (Límite estándar de ext3)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="calc-card">
+                    <h5>3. Capacidad Máxima del Volumen ext3</h5>
+                    <div class="input-group">
+                        <select id="ext3-max-fs" class="form-control">
+                            <option value="16TB" selected>16 TB (Límite de ext3)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="calc-card">
+                    <h5>4. Mecanismo de Asignación en ext3</h5>
+                    <div class="input-group">
+                        <select id="ext3-mecanismo" class="form-control">
+                            <option value="BLOQUES_INDIRECTOS_CON_JOURNAL" selected>Punteros directos e indirectos con diario transaccional</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="glass-card actions-footer-card">
+            <button class="btn btn-export-large" id="btn-export-main">
+                <span>💾 Descargar respuestas_tp3.json (Docente)</span>
             </button>
         </div>
 
         <footer class="footer">
-            <p>Sistemas Operativos II — Ciclo Lectivo 2026 | UNJu</p>
+            <p>Sistemas Operativos II — Ciclo Lectivo 2026 | UNJu FI</p>
         </footer>
     </div>
 
-    <script src="app.js?v=3.0"></script>
+    <script src="app.js?v=3.5"></script>
 </body>
 </html>

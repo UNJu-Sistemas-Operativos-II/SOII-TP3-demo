@@ -5,7 +5,7 @@ EVALUADOR AUTOMÁTICO DE TRABAJOS PRÁCTICOS - SISTEMAS OPERATIVOS II
 Universidad Nacional de Jujuy (UNJu - Facultad de Ingeniería)
 Ciclo Lectivo 2026 | Titular: Ing. María Fernanda Vázquez | JTP: Ing. Fabio D. Argañaraz
 =============================================================================
-Módulo de Evaluación Criptográfica del TP N° 3 (DEMOSTRACIÓN DOCENTE)
+Módulo de Evaluación Criptográfica del TP N° 3 (DEMOSTRACIÓN DOCENTE EXPANDIDA)
 """
 
 import sys
@@ -50,20 +50,13 @@ def grade_submission(submission, rubric):
     max_total_score = rubric.get("max_score", 100)
     exercise_results = {}
 
-    section_map = {
-        "seccion1_conceptos": submission.get("seccion1_conceptos", {}),
-        "seccion2_pila_io": submission.get("seccion2_pila_io", {}),
-        "seccion3_analisis_ext3": submission.get("seccion3_analisis_ext3", {})
-    }
-
     for ex_id, ex_spec in exercises_rubric.items():
         weight = ex_spec.get("weight", 10)
         feedback = ex_spec.get("feedback", "")
         ex_score = 0
         details = []
 
-        section_key = ex_spec.get("section", ex_id)
-        student_data = section_map.get(section_key, {})
+        student_data = submission.get(ex_id, {})
 
         if "hashes" in ex_spec:
             expected_hashes = ex_spec["hashes"]
@@ -72,7 +65,8 @@ def grade_submission(submission, rubric):
                 items_list = expected_hashes.get("items", [])
                 total_items = len(items_list)
                 correct_items_count = 0
-                actual_list = student_data.get(ex_spec.get("list_key", "orden_pila_io"), [])
+                list_key = ex_spec.get("list_key", "orden_cadena_vfs")
+                actual_list = student_data.get(list_key, [])
                 for idx, exp_hash in enumerate(items_list):
                     actual_val = actual_list[idx] if idx < len(actual_list) else None
                     actual_hash = compute_hash(ex_id, f"pos_{idx}", actual_val)
@@ -132,15 +126,15 @@ def print_report(results):
     RESET = "\033[0m"
 
     est = results.get("estudiante", {})
-    print(f"\n{BLUE}{'='*72}{RESET}")
+    print(f"\n{BLUE}{'='*74}{RESET}")
     print(f"{BOLD}  REPORTE DE EVALUACIÓN AUTOMÁTICA - DEMOSTRACIÓN DOCENTE TP 3{RESET}")
     print(f"  Cátedra: Sistemas Operativos II (UNJu - Ciclo Lectivo 2026)")
-    print(f"{BLUE}{'='*72}{RESET}")
+    print(f"{BLUE}{'='*74}{RESET}")
     print(f"  {BOLD}Docente:{RESET}     {est.get('nombre_completo', 'N/A')}")
     print(f"  {BOLD}Identificador:{RESET} {est.get('legajo', 'N/A')}")
     print(f"  {BOLD}GitHub:{RESET}      {est.get('github_user', 'N/A')}")
     print(f"  {BOLD}Fecha Eval:{RESET}  {results.get('evaluated_at')}")
-    print(f"{BLUE}{'-'*72}{RESET}")
+    print(f"{BLUE}{'-'*74}{RESET}")
 
     for ex_id, data in results["exercise_results"].items():
         status_symbol = f"{GREEN}✓ PASS{RESET}" if data["passed"] else f"{RED}✗ FAIL{RESET}"
@@ -153,14 +147,14 @@ def print_report(results):
             sub_val = d['submitted'] if d['submitted'] is not None else "(vacío)"
             print(f"    {mark} {d['item']}: {sub_val}")
 
-    print(f"\n{BLUE}{'='*72}{RESET}")
+    print(f"\n{BLUE}{'='*74}{RESET}")
     total = results["total_score"]
     max_s = results["max_score"]
     if results["passed"]:
-        print(f"  {BOLD}{GREEN}CALIFICACIÓN DOCENTE: {total} / {max_s} Pts — ¡DEMOSTRACIÓN EXITOSA!{RESET}")
+        print(f"  {BOLD}{GREEN}CALIFICACIÓN DOCENTE: {total} / {max_s} Pts — ¡DEMOSTRACIÓN EXITOSA! ✅{RESET}")
     else:
-        print(f"  {BOLD}{RED}CALIFICACIÓN: {total} / {max_s} Pts — REVISAR RESPUESTAS{RESET}")
-    print(f"{BLUE}{'='*72}{RESET}\n")
+        print(f"  {BOLD}{RED}CALIFICACIÓN: {total} / {max_s} Pts — REVISAR RESPUESTAS ❌{RESET}")
+    print(f"{BLUE}{'='*74}{RESET}\n")
 
 def main():
     parser = argparse.ArgumentParser(description="Autograder criptográfico para SOII - TP3 Demo")
