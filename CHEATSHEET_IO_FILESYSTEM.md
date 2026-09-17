@@ -36,6 +36,24 @@ brw-rw---- 1 root disk 8, 1 Sep 17 10:00 /dev/sda1
 * **Major (primer número):** Identifica al **manejador o driver** en el kernel responsable de gestionar el dispositivo (`1` = controladores de memoria/nulos, `8` = discos SCSI/SATA `sd`).
 * **Minor (segundo número):** Distingue la **instancia física o partición concreta** atendida por ese driver (`3` = `/dev/null`, `1` = primera partición de `/dev/sda`).
 
+### Dispositivos Especiales Clave en `/dev`
+* **`/dev/null` (El sumidero de bits / Bit Bucket):**
+  * *Escritura:* Descarta inmediatamente cualquier flujo de datos enviado sin almacenarlo en memoria ni disco.
+  * *Lectura:* Retorna de inmediato Fin de Archivo (`EOF` / 0 bytes).
+  * *Uso típico:* Silenciar mensajes de error o salidas no deseadas en scripts: `comando 2>/dev/null` o `comando > /dev/null 2>&1`.
+* **`/dev/zero` (La fuente inagotable de ceros):**
+  * *Escritura:* Se comporta como `/dev/null` (descarta los datos).
+  * *Lectura:* Provee un flujo continuo e infinito de bytes nulos (`\0` o `0x00`).
+  * *Uso típico:* Crear imágenes de disco vacías o particiones de swap preasignadas: `dd if=/dev/zero of=swap.img bs=1M count=512`.
+* **`/dev/urandom` (Generador pseudoaleatorio criptográfico no bloqueante):**
+  * *Lectura:* Entrega un flujo infinito de bytes pseudoaleatorios generados por el CSPRNG del kernel a partir de la reserva de entropía del hardware.
+  * *Ventaja frente a `/dev/random`:* Nunca se bloquea en espera de entropía física adicional.
+  * *Uso típico:* Creación de claves criptográficas SSH, hashes de sesión, contraseñas y sobreescritura segura de discos.
+* **`/dev/tty` (Terminal de control del proceso actual):**
+  * Representa el teclado físico y pantalla interactiva asociados a la sesión del proceso.
+  * Incluso si la entrada/salida estándar (`stdin`/`stdout`) fue redirigida a archivos o tuberías (`cat archivo | comando > salida.txt`), abrir `/dev/tty` interactúa siempre de forma directa con el operador de la terminal.
+  * *Uso típico:* Comandos como `sudo`, `passwd` y `ssh` para solicitar contraseñas de forma interactiva e impedir que sean capturadas desde una tubería.
+
 ---
 
 ## 2. Inodos y Enlaces (Hard Links vs Symbolic Links)

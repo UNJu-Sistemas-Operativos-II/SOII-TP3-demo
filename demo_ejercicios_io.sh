@@ -79,6 +79,33 @@ demo_ejercicio1_dispositivos() {
 #      Ejemplo: "crw-rw-rw- 1 root root 1, 3 ..." -> Major = 1, Minor = 3.
 #      Major = Identificador del driver en el kernel que maneja el dispositivo.
 #      Minor = Número de unidad física o partición concreta gestionada por ese driver.
+#
+# Paso 1.3: Explicar qué es y para qué sirve cada archivo especial del ejercicio:
+#   1. /dev/null ("El sumidero de bits" o Bit Bucket):
+#      - Al escribir: Descarta inmediatamente cualquier dato recibido sin almacenarlo en memoria ni disco.
+#      - Al leer: Retorna inmediatamente Fin de Archivo (EOF, 0 bytes leídos).
+#      - Uso común: Silenciar salidas estándar o mensajes de error en scripts (ej: 'comando 2>/dev/null').
+#
+#   2. /dev/zero ("La fuente inagotable de ceros binarios"):
+#      - Al escribir: Descarta los datos al igual que /dev/null.
+#      - Al leer: Provee un flujo continuo e infinito de bytes nulos (carácter '\0' o 0x00).
+#      - Uso común: Crear archivos preasignados con tamaño fijo, particiones de swap o imágenes de disco
+#        con la utilidad dd (ej: 'dd if=/dev/zero of=disco_vacio.img bs=1M count=100').
+#
+#   3. /dev/urandom ("Generador pseudoaleatorio criptográfico no bloqueante"):
+#      - Al leer: Provee un flujo inagotable de bytes pseudoaleatorios generados por el CSPRNG del kernel
+#        a partir de la reserva de entropía del hardware (ruido de interrupciones, teclado, red).
+#      - A diferencia del antiguo /dev/random, /dev/urandom NUNCA se bloquea aunque se agote la entropía
+#        estimada, siendo el recomendado para generación de tokens, hashes, claves SSH y criptografía.
+#
+#   4. /dev/tty ("Terminal de control del proceso actual"):
+#      - Representa el dispositivo de terminal interactivo (teclado y pantalla física) de la sesión en curso.
+#      - Aunque la entrada/salida estándar (stdin/stdout) haya sido redirigida a archivos o tuberías
+#        (ej: 'cat datos.txt | proceso > salida.txt'), abrir /dev/tty siempre interactúa directamente
+#        con el operador frente a la consola.
+#      - Uso común: Programas como 'sudo', 'passwd' o 'ssh' para solicitar contraseñas al usuario
+#        e impedir que sean capturadas desde una redirección de entrada.
+#
 
 # ------------------------------------------------------------------------------
 # DEMO 2: Módulos Cargables del Kernel (LKM) y Controladores de Almacenamiento
