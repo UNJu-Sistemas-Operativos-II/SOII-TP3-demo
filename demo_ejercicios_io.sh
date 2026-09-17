@@ -38,9 +38,6 @@ demo_ejercicio1_dispositivos() {
     echo "  [DEMO 1] Inspeccionando dispositivos especiales y números Major/Minor en /dev..."
     mkdir -p soluciones_demo
     ls -l /dev/null /dev/zero /dev/urandom /dev/tty > soluciones_demo/dispositivos_demo.txt 2>&1
-    if [ -b "/dev/loop0" ]; then
-        ls -l /dev/loop0 >> soluciones_demo/dispositivos_demo.txt 2>&1
-    fi
 }
 # ------------------------------------------------------------------------------
 # 💡 GUÍA PASO A PASO EN VIVO PARA MOSTRAR A LOS ALUMNOS (DEMO 1):
