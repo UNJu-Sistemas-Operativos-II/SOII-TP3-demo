@@ -3,11 +3,17 @@
 
 # Caches de Python
 __pycache__/
-*.pyc
+*.py[cod]
 
-# Archivos de disco temporales
+# Salidas y artefactos generados localmente por pruebas
 soluciones_demo/*.img
 soluciones_demo/*.ext4
+soluciones_demo/*.txt
+soluciones_demo/demo_origen.txt
+soluciones_demo/demo_duro.txt
+soluciones_demo/demo_simbolico.txt
+!soluciones_demo/.gitkeep
+!soluciones_demo/respuestas_tp3.json
 
 # Editores y SO
 .DS_Store
