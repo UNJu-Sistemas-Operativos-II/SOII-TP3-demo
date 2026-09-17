@@ -45,6 +45,22 @@ demo_ejercicio1_dispositivos() {
 # ------------------------------------------------------------------------------
 # 💡 GUÍA PASO A PASO EN VIVO PARA MOSTRAR A LOS ALUMNOS (DEMO 1):
 # ------------------------------------------------------------------------------
+# Paso 1.0: Explicar qué es el directorio /dev y la filosofía "Todo es un archivo":
+#   -> Concepto de /dev (Device Filesystem / devtmpfs):
+#      En Unix y Linux rige el principio fundacional: "Everything is a file".
+#      El directorio /dev (devices) NO es una carpeta común almacenada en el disco,
+#      sino un sistema de archivos virtual montado en memoria RAM (devtmpfs)
+#      gestionado dinámicamente por el kernel de Linux y el subsistema udev.
+#   -> ¿Cuál es su propósito?
+#      Sirve como punto de entrada o interfaz en Espacio de Usuario (User Space)
+#      para interactuar con los Controladores de Dispositivos (Device Drivers) que
+#      se ejecutan dentro del Espacio de Kernel (Kernel Space).
+#   -> ¿Por qué se diseñó así?
+#      Para que cualquier programa pueda interactuar con el hardware físico (discos,
+#      terminales, puertos serie) o pseudo-dispositivos del kernel (/dev/null,
+#      /dev/urandom, /dev/zero) empleando las llamadas al sistema universales de archivos:
+#      open(), read(), write(), close() e ioctl(), sin necesidad de APIs propietarias.
+#
 # Paso 1.1: Listar el contenido de /dev con 'ls -l /dev | head -n 15':
 #   $ ls -l /dev
 #   -> Explicación: Observe el primer carácter de los permisos (tipo de archivo en Linux/POSIX):

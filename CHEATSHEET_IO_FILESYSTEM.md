@@ -6,9 +6,16 @@
 
 ---
 
-## 1. Tipos de Archivo y Archivos Especiales (`/dev`)
+## 1. El Directorio `/dev` y Tipos de Archivo Especiales
 
-En Linux, la primera letra de la salida de `ls -l` define la naturaleza del nodo en el sistema de archivos:
+### ¿Qué es el directorio `/dev`?
+En Unix y Linux rige el principio fundacional: **"Todo es un archivo" (*Everything is a file*)**.  
+El directorio `/dev` (*devices*) **no es una carpeta común almacenada en el disco**, sino un **sistema de archivos virtual montado en memoria RAM (`devtmpfs`)** que el kernel de Linux y el subsistema `udev` gestionan dinámicamente en tiempo de ejecución.
+
+* **Propósito:** Actúa como puente o interfaz en el **Espacio de Usuario (*User Space*)** para comunicarse con los **Controladores de Dispositivos (*Device Drivers*)** que residen en el **Espacio del Kernel (*Kernel Space*)**.
+* **Ventaja del modelo:** Permite que cualquier programa interactúe con el hardware físico (discos rígidos, terminales, buses) o con pseudo-dispositivos del kernel (`/dev/null`, `/dev/zero`, `/dev/urandom`) empleando las llamadas al sistema universales de archivos: `open()`, `read()`, `write()`, `close()` e `ioctl()`, sin requerir APIs propietarias.
+
+En Linux, el primer carácter de los permisos en `ls -l` define la naturaleza del nodo en el sistema de archivos:
 
 | Tipo | Letra | Descripción | Ejemplos en el Sistema |
 | :--- | :---: | :--- | :--- |
