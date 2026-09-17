@@ -1,0 +1,55 @@
+{
+  "tp_metadata": {
+    "tp_id": "SOII-2026-TP3-DEMO",
+    "title": "TP N° 3: Demostración Docente - Entrada/Salida y Sistema de Archivos",
+    "catedra": "Sistemas Operativos II - UNJu Facultad de Ingeniería",
+    "version": "1.0.0"
+  },
+  "security": {
+    "algorithm": "SHA-256 + Salted HMAC",
+    "protected": true
+  },
+  "max_score": 100,
+  "exercises": {
+    "seccion1_conceptos": {
+      "title": "Sección 1: Conceptos Fundamentales de E/S y Sistema de Archivos (Demo)",
+      "weight": 35,
+      "feedback": "Demostración docente sobre la arquitectura de E/S, VFS y journaling.",
+      "hashes": {
+        "q1_filosofia_io": "252a98fe7c9f6312bb2c717e502f45d00c617487b8edd930ba59b37b3d2cb92a",
+        "q2_major_minor": "ed3710cf731ff9b4c080005ffc53436c45dba2f5b37e03e27765b979a4d7c465",
+        "q3_vfs_inodo": "798728ce23d33d30b2058f5dca509bec975d4a243013ef5427422d940fbeb64f",
+        "q4_enlace_duro_vs_simbolico": "7a1fe5c38a3fa0e53cf0fd62b21d3c54867c6de6b362ed9f932844fd3f141ea5",
+        "q5_ext3_journaling": "224c7b2921c78cd37ab5cfec1febea51fe3f74224cc1aa9de1652e5ef4651686"
+      }
+    },
+    "seccion2_pila_io": {
+      "title": "Sección 2: Pila de Software de Entrada/Salida en Linux (Demo)",
+      "weight": 35,
+      "feedback": "Demostración de la pila de abstracción VFS y controladores de hardware en vivo.",
+      "type": "ordered_list",
+      "list_key": "orden_pila_io",
+      "hashes": {
+        "items": [
+          "fa644368c2f170d0bfb2710606a48940c0859bae80facdb2e642c02fb17277f1",
+          "cf688baa3d3c3bc59d2eaf5f764d5f2ba0a2d24499a407845be9c88ab9c6b4a8",
+          "fccb7a1ebe944d45a30900cf808397cb1bd0285d9f34aa69f1febc6b2663c866",
+          "00b790fb795b72e9e75889ba0309cbd5d4a8bc55a319d2871219390318e78018",
+          "7cf1832951a25df6c7cf89b43dc451837a3a798f404546bfee63189e488b1826",
+          "1d15551faed67087fee295b4cae4adbad09a4dc5977479a835e3325301efb265"
+        ]
+      }
+    },
+    "seccion3_analisis_ext3": {
+      "title": "Sección 3: Comparativa de Sistemas de Archivos y Metadatos ext3 (Demo)",
+      "weight": 30,
+      "feedback": "Demostración del sistema ext3 con journaling y bloques indirectos.",
+      "hashes": {
+        "journaling_mode": "bc6081f11b5b223cc634d911857c0a6036c260a02043092944ff40af361c193c",
+        "tamano_maximo_archivo_ext3": "442ca3eb69b91319bf7868431b41bef2cb502ea442f24487e068d38fd16469e9",
+        "tamano_maximo_fs_ext3": "8abb1c843da4e69817a7f74b49aea5718f682fb1b465fb34e78d3c9f0c2e0dca",
+        "mecanismo_ext3": "f9ca6900b958ddbd41a1e0dab7ce182db611f462554cd0b51b34c531037d00c5"
+      }
+    }
+  }
+}

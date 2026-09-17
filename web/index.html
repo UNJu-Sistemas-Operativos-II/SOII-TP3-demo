@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SO II - TP 3 DEMO: Demostración Docente E/S y Filesystems</title>
+    <link rel="stylesheet" href="styles.css?v=3.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="hero-header">
+            <div class="badge">UNJu — DEMOSTRACIÓN DOCENTE EN VIVO</div>
+            <h1>Sistemas Operativos II — Trabajo Práctico N° 3 (Demo)</h1>
+            <p class="subtitle">Demostración en Vivo: Arquitectura de E/S, Abstracción VFS y Transición de ext2 a ext3/ext4</p>
+        </header>
+
+        <div class="glass-card student-card">
+            <h2>👨‍🏫 Datos del Docente</h2>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="student-name">Docente Responsable:</label>
+                    <input type="text" id="student-name" value="Ing. Fabio Damián Argañaraz Azua (Docente)">
+                </div>
+                <div class="input-group">
+                    <label for="student-lu">Identificador Docente:</label>
+                    <input type="text" id="student-lu" value="DOCENTE-01">
+                </div>
+                <div class="input-group">
+                    <label for="student-github">Usuario GitHub:</label>
+                    <input type="text" id="student-github" value="fabioarganaraz">
+                </div>
+            </div>
+        </div>
+
+        <section class="glass-card section-card">
+            <div class="section-header">
+                <span class="step-num">01</span>
+                <h2>Conceptos Fundamentales de E/S y Sistema de Archivos (Demo)</h2>
+            </div>
+
+            <div class="biblio-guide">
+                <div class="biblio-header">
+                    <span class="biblio-title">📖 Dónde estudiar este tema en la bibliografía</span>
+                    <span class="biblio-arrow">▼</span>
+                </div>
+                <div class="biblio-body">
+                    <div class="biblio-item"><strong>Silberschatz:</strong> Cap. 12 (E/S) y Cap. 10 (Archivos) <span class="pages">Cap. 10 y 12</span></div>
+                    <div class="biblio-item"><strong>Carretero:</strong> Cap. 6 y 7 <span class="pages">Cap. 6 y 7</span></div>
+                    <div class="biblio-item"><strong>Diapositivas Cátedra:</strong> Unidad 3 (Slides 1 a 28) <span class="pages">U3</span></div>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <p class="question-title">1. En Unix y Linux, ¿cómo se representa e interactúa con un dispositivo periférico?</p>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q1_filosofia_io" value="A"> Se accede mediante interrupciones de hardware no controladas por el kernel.</label>
+                    <label class="option-label"><input type="radio" name="q1_filosofia_io" value="B"> A través de protocolos de red propietarios obligatorios para cada puerto.</label>
+                    <label class="option-label"><input type="radio" name="q1_filosofia_io" value="C" checked> Todos los dispositivos se exponen como archivos en /dev y responden a llamadas estándar.</label>
+                    <label class="option-label"><input type="radio" name="q1_filosofia_io" value="D"> Solo pueden ser leídos y escritos desde el firmware UEFI de la máquina.</label>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <p class="question-title">2. ¿Qué función desempeñan los números Major y Minor en /dev?</p>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q2_major_minor" value="A"> Indican el número de bloques transferidos por segundo en la unidad.</label>
+                    <label class="option-label"><input type="radio" name="q2_major_minor" value="B" checked> El número Major mapea al driver correspondiente y el Minor identifica la instancia o partición.</label>
+                    <label class="option-label"><input type="radio" name="q2_major_minor" value="C"> Representan el PID del proceso de usuario y el canal DMA asignado.</label>
+                    <label class="option-label"><input type="radio" name="q2_major_minor" value="D"> Establecen los límites de cuota de disco asignados al superusuario.</label>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <p class="question-title">3. ¿Qué atributo NO forma parte de la estructura de metadatos de un Inodo?</p>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q3_vfs_inodo" value="A"> Los permisos de lectura, escritura y ejecución.</label>
+                    <label class="option-label"><input type="radio" name="q3_vfs_inodo" value="B"> El tamaño del archivo en bytes y fechas atime/mtime.</label>
+                    <label class="option-label"><input type="radio" name="q3_vfs_inodo" value="C"> Los punteros a los bloques de almacenamiento físico.</label>
+                    <label class="option-label"><input type="radio" name="q3_vfs_inodo" value="D" checked> El nombre del archivo (almacenado en las entradas de directorio dentry).</label>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <p class="question-title">4. En relación con los enlaces, ¿qué diferencia a un Hard Link de un Soft Link?</p>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q4_enlace_duro_vs_simbolico" value="A" checked> El hard link apunta al inodo existente; el soft link apunta al nombre de ruta como puntero simbólico.</label>
+                    <label class="option-label"><input type="radio" name="q4_enlace_duro_vs_simbolico" value="B"> El hard link duplica los datos en disco y el soft link los comprime.</label>
+                    <label class="option-label"><input type="radio" name="q4_enlace_duro_vs_simbolico" value="C"> El hard link se rompe si se borra el archivo original.</label>
+                    <label class="option-label"><input type="radio" name="q4_enlace_duro_vs_simbolico" value="D"> Ambos son idénticos y usan el mismo inodo con distintos nombres de usuario.</label>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <p class="question-title">5. ¿Cuál fue la innovación central introducida por ext3 frente a ext2?</p>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q5_ext3_journaling" value="A"> Reemplazo de bloques de 4 KB por páginas de memoria virtual de 64 KB.</label>
+                    <label class="option-label"><input type="radio" name="q5_ext3_journaling" value="B"> Eliminación total de la memoria intermedia de disco.</label>
+                    <label class="option-label"><input type="radio" name="q5_ext3_journaling" value="C" checked> Inclusión de Journaling (registro de transacciones) para recuperación rápida tras fallos.</label>
+                    <label class="option-label"><input type="radio" name="q5_ext3_journaling" value="D"> Compatibilidad nativa exclusiva con sistemas de archivos FAT32.</label>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-card section-card">
+            <div class="section-header">
+                <span class="step-num">02</span>
+                <h2>Simulador Interactivo: Pila de Abstracción VFS y ext3 (Demo)</h2>
+            </div>
+
+            <div class="dnd-scenario">
+                <div class="scenario-badge">Escenario A: Pila de Software de Entrada/Salida en Linux</div>
+                <p class="scenario-context">
+                    Capas arquitectónicas desde el espacio de usuario hasta el hardware físico:
+                </p>
+
+                <div class="action-bank-wrapper">
+                    <div class="bank-title">📦 Banco de Capas de E/S:</div>
+                    <div class="action-bank" id="bank-stack">
+                        <div class="dnd-item" draggable="true" data-id="FS_DRIVER">🗂️ Sistema de Archivos Concreto (ext3/Buffer Cache)</div>
+                        <div class="dnd-item" draggable="true" data-id="HARDWARE">💾 Controlador de Hardware y Disco Físico</div>
+                        <div class="dnd-item" draggable="true" data-id="APP">💻 Aplicación de Usuario (User Space)</div>
+                        <div class="dnd-item" draggable="true" data-id="DEVICE_DRIVER">⚙️ Manejador de Dispositivo (Device Driver)</div>
+                        <div class="dnd-item" draggable="true" data-id="SYSCALL">📞 Interfaz de Llamadas al Sistema (Syscalls)</div>
+                        <div class="dnd-item" draggable="true" data-id="VFS">🌐 Virtual File System (VFS)</div>
+                    </div>
+                </div>
+
+                <div class="dropzone-container">
+                    <div class="dropzone-header">
+                        <span class="status-indicator">🏗️</span>
+                        <h4>Pila de Abstracción de E/S (6 niveles)</h4>
+                        <button class="btn-reset" onclick="resetZone('zone-stack')">🔄 Limpiar</button>
+                    </div>
+                    <div class="dropzone" id="zone-stack" data-target="stack" data-max="6">
+                        <div class="drop-placeholder">Suelte aquí las 6 capas...</div>
+                    </div>
+                    <div class="sim-feedback" id="feedback-stack"></div>
+                </div>
+            </div>
+
+            <div class="dnd-scenario" style="margin-top: 2rem;">
+                <div class="scenario-badge">Escenario B: Comparativa de Sistemas de Archivos y Metadatos en ext3 (Demo)</div>
+                <p class="scenario-context">
+                    Parámetros de diseño del sistema ext3 explicados en la clase magistral:
+                </p>
+
+                <div class="buddy-calc-grid">
+                    <div class="calc-box">
+                        <h5>1. Modo de Journaling Predeterminado</h5>
+                        <p class="box-desc">Modo predeterminado de registro ordenado:</p>
+                        <div class="input-group">
+                            <select id="ext3-journaling">
+                                <option value="ORDERED" selected>data=ordered (Metadatos en journal tras ordenar bloques de datos)</option>
+                                <option value="JOURNAL">data=journal</option>
+                                <option value="WRITEBACK">data=writeback</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="calc-box">
+                        <h5>2. Tamaño Máximo de Archivo en ext3</h5>
+                        <p class="box-desc">Límite de tamaño de archivo con bloques de 4 KB:</p>
+                        <div class="input-group">
+                            <select id="ext3-max-file">
+                                <option value="2TB" selected>2 TB (Límite estándar de ext3)</option>
+                                <option value="16TB">16 TB</option>
+                                <option value="1EB">1 EB</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="calc-box">
+                        <h5>3. Tamaño Máximo del Volumen ext3</h5>
+                        <p class="box-desc">Límite de volumen del filesystem ext3:</p>
+                        <div class="input-group">
+                            <select id="ext3-max-fs">
+                                <option value="16TB" selected>16 TB (Límite de ext3 con bloques de 4 KB)</option>
+                                <option value="1EB">1 EB</option>
+                                <option value="32TB">32 TB</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="calc-box">
+                        <h5>4. Mecanismo de Asignación de Bloques</h5>
+                        <p class="box-desc">Mecanismo utilizado en ext3 antes de la llegada de extents:</p>
+                        <div class="input-group">
+                            <select id="ext3-mecanismo">
+                                <option value="BLOQUES_INDIRECTOS_CON_JOURNAL" selected>Punteros directos e indirectos con diario transaccional</option>
+                                <option value="EXTENTS">Extents</option>
+                                <option value="FAT">Tabla FAT</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="glass-card actions-card">
+            <button class="btn-export" id="btn-export">
+                <span>📥 Descargar respuestas_tp3.json</span>
+            </button>
+        </div>
+
+        <footer class="footer">
+            <p>Sistemas Operativos II — Ciclo Lectivo 2026 | UNJu</p>
+        </footer>
+    </div>
+
+    <script src="app.js?v=3.0"></script>
+</body>
+</html>

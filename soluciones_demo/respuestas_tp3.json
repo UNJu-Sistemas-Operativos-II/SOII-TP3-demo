@@ -1,0 +1,31 @@
+{
+  "estudiante": {
+    "nombre_completo": "Ing. Fabio Damián Argañaraz Azua (Docente)",
+    "legajo": "DOCENTE-01",
+    "github_user": "fabioarganaraz",
+    "fecha_entrega": "2026-09-17"
+  },
+  "seccion1_conceptos": {
+    "q1_filosofia_io": "C",
+    "q2_major_minor": "B",
+    "q3_vfs_inodo": "D",
+    "q4_enlace_duro_vs_simbolico": "A",
+    "q5_ext3_journaling": "C"
+  },
+  "seccion2_pila_io": {
+    "orden_pila_io": [
+      "APP",
+      "SYSCALL",
+      "VFS",
+      "FS_DRIVER",
+      "DEVICE_DRIVER",
+      "HARDWARE"
+    ]
+  },
+  "seccion3_analisis_ext3": {
+    "journaling_mode": "ORDERED",
+    "tamano_maximo_archivo_ext3": "2TB",
+    "tamano_maximo_fs_ext3": "16TB",
+    "mecanismo_ext3": "BLOQUES_INDIRECTOS_CON_JOURNAL"
+  }
+}

@@ -1,0 +1,40 @@
+name: GitHub Classroom Autograding - TP 3 DEMO
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  evaluacion-demo:
+    name: Autograding Demo Tests - TP3
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Entorno Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar herramientas de filesystem
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq e2fsprogs kmod
+
+      - name: Configurar Permisos de Ejecución
+        run: |
+          chmod +x test_demo.sh demo_ejercicios_io.sh
+
+      - name: Ejecutar Suite de Evaluación Docente
+        run: |
+          ./test_demo.sh

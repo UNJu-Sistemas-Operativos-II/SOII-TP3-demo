@@ -1,0 +1,16 @@
+# Claves maestras docentes privadas
+*_master.json
+
+# Caches de Python
+__pycache__/
+*.pyc
+
+# Archivos de disco temporales
+soluciones_demo/*.img
+soluciones_demo/*.ext4
+
+# Editores y SO
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
