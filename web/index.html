@@ -289,7 +289,7 @@
                     <h5>1. Desplazamiento Total en SCAN</h5>
                     <div class="input-group">
                         <select id="sim-desplazamiento-scan" class="form-control">
-                            <option value="331" selected>331 cilindros ((199-53) + (199-14))</option>
+                            <option value="331" selected>331 cilindros</option>
                         </select>
                     </div>
                 </div>
@@ -298,7 +298,7 @@
                     <h5>2. Desplazamiento Total en SSTF</h5>
                     <div class="input-group">
                         <select id="sim-desplazamiento-sstf" class="form-control">
-                            <option value="236" selected>236 cilindros (53→65→67→37→14→98→122→124→183)</option>
+                            <option value="236" selected>236 cilindros</option>
                         </select>
                     </div>
                 </div>
@@ -307,7 +307,7 @@
                     <h5>3. Ventaja del Elevator Scheduler</h5>
                     <div class="input-group">
                         <select id="sim-ventaja-elevator" class="form-control">
-                            <option value="MINIMIZA_MOVIMIENTO_CABEZAL" selected>Ordena peticiones por sector y cercanía física, minimizando movimientos bruscos del cabezal</option>
+                            <option value="MINIMIZA_MOVIMIENTO_CABEZAL" selected>Ordena las peticiones por posición física reduciendo los cambios bruscos de sentido del cabezal</option>
                         </select>
                     </div>
                 </div>
@@ -316,7 +316,7 @@
                     <h5>4. Planificador en Linux Moderno</h5>
                     <div class="input-group">
                         <select id="sim-algoritmo-linux-default" class="form-control">
-                            <option value="DEADLINE_BFQ" selected>Deadline Scheduler y BFQ (Budget Fair Queueing) con colas temporizadas</option>
+                            <option value="DEADLINE_BFQ" selected>Deadline Scheduler y BFQ (Budget Fair Queueing) con colas temporizadas para evitar la inanición</option>
                         </select>
                     </div>
                 </div>
